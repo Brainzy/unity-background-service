@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.CountDownTimer;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -28,6 +29,7 @@ import static android.Manifest.permission.ACTIVITY_RECOGNITION;
 import static androidx.core.app.ActivityCompat.requestPermissions;
 
 public final class Bridge extends Application {
+    static int testSteps;
     static int summarySteps;
     static int steps;
     static int initialSteps;
@@ -70,6 +72,7 @@ public final class Bridge extends Application {
 
     public static void StartService() {
         if (myActivity != null) {
+            incrementTestSteps();
             final SharedPreferences sharedPreferences = myActivity.getSharedPreferences("service_settings", MODE_PRIVATE);
             if (!sharedPreferences.getBoolean("auto_start", false)) {
                 for (final Intent intent : POWERMANAGER_INTENTS) {
@@ -96,6 +99,19 @@ public final class Bridge extends Application {
         }
     }
 
+    private static void incrementTestSteps(){
+        new CountDownTimer(100000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                testSteps++;
+            }
+            public void onFinish() {
+                testSteps++;
+            }
+
+        }.start();
+    }
+
     private static void start(){
         myActivity.startForegroundService(new Intent(myActivity, PedometerService.class));
 
@@ -112,7 +128,7 @@ public final class Bridge extends Application {
         editor.putString(DATE, currentDate.toString());
         int walkedSteps = sharedPreferences.getInt(STEPS, 0);
         int allSteps = sharedPreferences.getInt(SUMMARY_STEPS,0);
-        summarySteps=walkedSteps+allSteps;
+        summarySteps = walkedSteps + allSteps + testSteps;
         Log.i("PEDOMETER", "FROM BRIDGE CLASS - GetCurrentSteps:"+summarySteps);
         return summarySteps;
     }
