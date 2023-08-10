@@ -18,7 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-public class PedometerService extends Service {
+public class BackgroundForUnityService extends Service {
 
     public SharedPreferences sharedPreferences;
     String TAG = "PEDOMETER";

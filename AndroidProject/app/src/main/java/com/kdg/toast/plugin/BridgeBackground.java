@@ -102,11 +102,11 @@ public final class BridgeBackground extends Application {
     }
 
     private static void start(){
-        myActivity.startForegroundService(new Intent(myActivity, PedometerService.class));
+        myActivity.startForegroundService(new Intent(myActivity, BackgroundForUnityService.class));
 
     }
     public static void StopService(){
-        Intent serviceIntent = new Intent(myActivity, PedometerService.class);
+        Intent serviceIntent = new Intent(myActivity, BackgroundForUnityService.class);
         myActivity.stopService(serviceIntent);
 
     }
