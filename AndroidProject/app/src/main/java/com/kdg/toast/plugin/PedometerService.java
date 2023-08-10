@@ -45,7 +45,7 @@ public class PedometerService extends Service {
 
     private void startNotification(){
         String input = "Counting your steps...";
-        Intent notificationIntent = new Intent(this, Bridge.myActivity.getClass());
+        Intent notificationIntent = new Intent(this, BridgeBackground.myActivity.getClass());
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
@@ -61,16 +61,16 @@ public class PedometerService extends Service {
 
     @Override
     public void onCreate() {
-        Log.i(TAG, "onCreate: CREATED"+Bridge.steps);
+        Log.i(TAG, "onCreate: CREATED"+ BridgeBackground.steps);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         loadData();
-        saveSummarySteps(Bridge.summarySteps+Bridge.steps);
+        saveSummarySteps(BridgeBackground.summarySteps+ BridgeBackground.steps);
     }
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
-        Log.i(TAG, "onTaskRemoved: REMOVED"+Bridge.steps);
+        Log.i(TAG, "onTaskRemoved: REMOVED"+ BridgeBackground.steps);
     }
 
     @Override
@@ -79,10 +79,10 @@ public class PedometerService extends Service {
         createNotificationChannel();
         startNotification();
         super.onCreate();
-        Bridge.initialSteps=0;
+        BridgeBackground.initialSteps=0;
         SharedPreferences.Editor editor = sharedPreferences.edit();
         initialDate = Calendar.getInstance().getTime();
-        editor.putString(Bridge.INIT_DATE, currentDate.toString());
+        editor.putString(BridgeBackground.INIT_DATE, currentDate.toString());
         editor.apply();
         return START_NOT_STICKY;
     }
@@ -92,30 +92,30 @@ public class PedometerService extends Service {
         super.onDestroy();
         Log.i(TAG, "onDestroy: DESTROYED");
         loadData();
-        saveSummarySteps(Bridge.summarySteps+Bridge.steps);
+        saveSummarySteps(BridgeBackground.summarySteps+ BridgeBackground.steps);
     }
 
     public void saveData(int currentSteps) {
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
         currentDate = Calendar.getInstance().getTime();
-        editor.putString(Bridge.DATE, currentDate.toString());
+        editor.putString(BridgeBackground.DATE, currentDate.toString());
         Log.i(TAG, "saveData: saved! "+currentSteps);
-        editor.putInt(Bridge.STEPS, currentSteps);
+        editor.putInt(BridgeBackground.STEPS, currentSteps);
         editor.apply();
     }
     public void saveSummarySteps(int stepsToSave) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         currentDate = Calendar.getInstance().getTime();
-        editor.putString(Bridge.DATE, currentDate.toString());
+        editor.putString(BridgeBackground.DATE, currentDate.toString());
         Log.i(TAG, "saveSummarySteps: saved! "+stepsToSave);
         editor.putInt("summarySteps", stepsToSave);
         editor.apply();
     }
     public void loadData() {
-        Bridge.steps = sharedPreferences.getInt(Bridge.STEPS, 0);
-        Bridge.summarySteps = sharedPreferences.getInt("summarySteps",0);
-        Log.i(TAG, "loadData: steps"+Bridge.steps);
-        Log.i(TAG, "loadData: summarySteps "+Bridge.summarySteps);
+        BridgeBackground.steps = sharedPreferences.getInt(BridgeBackground.STEPS, 0);
+        BridgeBackground.summarySteps = sharedPreferences.getInt("summarySteps",0);
+        Log.i(TAG, "loadData: steps"+ BridgeBackground.steps);
+        Log.i(TAG, "loadData: summarySteps "+ BridgeBackground.summarySteps);
     }
 }
