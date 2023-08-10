@@ -1,43 +1,27 @@
 package com.kdg.toast.plugin;
 
-import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.content.res.Configuration;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Build;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.util.Calendar;
 import java.util.Date;
-
-import androidx.annotation.LongDef;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-import androidx.core.content.ContextCompat;
 
-public class PedometerService extends Service implements SensorEventListener {
+public class PedometerService extends Service {
 
     public SharedPreferences sharedPreferences;
     String TAG = "PEDOMETER";
-    SensorManager sensorManager;
     boolean running;
     Date currentDate;
     Date initialDate;
@@ -87,8 +71,6 @@ public class PedometerService extends Service implements SensorEventListener {
     public void onTaskRemoved(Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
         Log.i(TAG, "onTaskRemoved: REMOVED"+Bridge.steps);
-        initSensorManager();
-
     }
 
     @Override
@@ -98,7 +80,6 @@ public class PedometerService extends Service implements SensorEventListener {
         startNotification();
         super.onCreate();
         Bridge.initialSteps=0;
-        initSensorManager();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         initialDate = Calendar.getInstance().getTime();
         editor.putString(Bridge.INIT_DATE, currentDate.toString());
@@ -110,42 +91,8 @@ public class PedometerService extends Service implements SensorEventListener {
     public void onDestroy() {
         super.onDestroy();
         Log.i(TAG, "onDestroy: DESTROYED");
-        disposeSensorManager();
         loadData();
         saveSummarySteps(Bridge.summarySteps+Bridge.steps);
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent sensorEvent) {
-        Log.i(TAG, "onSensorChanged!!!!!!: "+sensorEvent.values[0]);
-        if (Bridge.initialSteps==0){
-            Log.i(TAG, "onSensorChanged: AWAKE");
-            Bridge.initialSteps=(int) sensorEvent.values[0];
-        }
-        if (running){
-            Bridge.steps=(int)sensorEvent.values[0]-Bridge.initialSteps;
-            Log.i(TAG, "onSensorChanged: current steps: "+Bridge.steps);
-            saveData(Bridge.steps);
-        }
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int i) {    }
-
-    public void initSensorManager(){
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        running = true;
-        Sensor countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-        if (countSensor!=null){
-            sensorManager.registerListener(this,countSensor,SensorManager.SENSOR_DELAY_UI);
-        }
-        else {
-            Toast.makeText(Bridge.myActivity,"Sensor Not Found (", Toast.LENGTH_LONG).show();
-        }
-    }
-    public void disposeSensorManager(){
-        running=false;
-        sensorManager.unregisterListener(this);
     }
 
     public void saveData(int currentSteps) {
