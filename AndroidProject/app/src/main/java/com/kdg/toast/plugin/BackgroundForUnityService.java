@@ -52,7 +52,7 @@ public class BackgroundForUnityService extends Service {
         Notification notification = new NotificationCompat.Builder(this, "PedometerLib")
                 .setContentTitle("Background Walking Service")
                 .setContentText(input)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.mipmap.ic_launcher_icon_background)
                 .setContentIntent(pendingIntent)
                 .build();
         startForeground(112, notification);
