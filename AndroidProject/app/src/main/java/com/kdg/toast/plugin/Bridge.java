@@ -10,23 +10,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.CountDownTimer;
-import android.os.PowerManager;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.util.Log;
-
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Arrays;
-
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
-import static android.Manifest.permission.ACTIVITY_RECOGNITION;
-import static androidx.core.app.ActivityCompat.requestPermissions;
 
 public final class Bridge extends Application {
     static int testSteps;
@@ -35,7 +25,6 @@ public final class Bridge extends Application {
     static int initialSteps;
     static Activity myActivity;
     static Context appContext;
-    Date currentDate;
     static final String STEPS="steps";
     static final String SUMMARY_STEPS="summarySteps";
     static final String DATE="currentDate";
