@@ -34,8 +34,8 @@ public class BackgroundForUnityService extends Service {
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             final NotificationChannel notificationChannel = new NotificationChannel(
-                    "PedometerLib",
-                    "Service Channel",
+                    "DEFAULT_CHANNEL_ID",
+                    "Neostesia background service channel",
                     NotificationManager.IMPORTANCE_DEFAULT
             );
             final NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
@@ -44,13 +44,13 @@ public class BackgroundForUnityService extends Service {
     }
 
     private void startNotification(){
-        String input = "Neostesia matchmaking search";
+        String input = "Searching for game";
         Intent notificationIntent = new Intent(this, BridgeBackground.myActivity.getClass());
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
-        Notification notification = new NotificationCompat.Builder(this, "PedometerLib")
-                .setContentTitle("Background Walking Service")
+        Notification notification = new NotificationCompat.Builder(this, "DEFAULT_CHANNEL_ID")
+                .setContentTitle("Neostesia matchmaking service")
                 .setContentText(input)
                 .setSmallIcon(R.mipmap.ic_launcher_icon_background)
                 .setContentIntent(pendingIntent)
