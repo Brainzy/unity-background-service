@@ -44,7 +44,7 @@ public class BackgroundForUnityService extends Service {
     }
 
     private void startNotification(){
-        String input = "Counting your steps...";
+        String input = "Neostesia matchmaking search";
         Intent notificationIntent = new Intent(this, BridgeBackground.myActivity.getClass());
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
