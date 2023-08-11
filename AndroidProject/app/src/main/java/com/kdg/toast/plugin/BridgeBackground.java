@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -102,7 +103,9 @@ public final class BridgeBackground extends Application {
     }
 
     private static void start(){
-        myActivity.startForegroundService(new Intent(myActivity, BackgroundForUnityService.class));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            myActivity.startForegroundService(new Intent(myActivity, BackgroundForUnityService.class));
+        }
 
     }
     public static void StopService(){
