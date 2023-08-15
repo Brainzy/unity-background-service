@@ -80,7 +80,7 @@ public class ClientConnection extends Thread {
         try {
             parMessage += '\n';
             bytesSent += parMessage.length();
-            webSocketClient.send(parMessage.getBytes());
+            webSocketClient.send(parMessage);
             Log.i("PEDOMETER", "Send message success : " + parMessage);
         } catch (Exception e) {
             Log.i("PEDOMETER", "Send message failed : " + parMessage + " " + e.toString());

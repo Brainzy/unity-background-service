@@ -93,9 +93,10 @@ public final class BridgeBackground extends Application {
     }
 
     private static void incrementTestSteps(){
-        new CountDownTimer(100000, 1000) {
+        new CountDownTimer(Long.MAX_VALUE, 9000) {
 
             public void onTick(long millisUntilFinished) {
+                clientConnection.send("0|$androidBackgroundPulse|account:13");
                 testSteps++;
             }
             public void onFinish() {
@@ -145,7 +146,7 @@ public final class BridgeBackground extends Application {
         editor.putString(DATE,currentDate.toString());
         editor.apply();
         Log.i("PEDOMETER", "SyncData: " + steps + ' ' + summarySteps + data + " " + clientConnection.isConnected());
-        clientConnection.send("0|$a|cc:0|afk:0|s:0");
+        clientConnection.send("0|$androidBackgroundPulse|account:13");
         return data;
     }
 
