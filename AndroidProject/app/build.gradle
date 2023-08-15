@@ -25,6 +25,7 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation ('androidx.core:core:1.8.0')
+    embed 'dev.gustavoavila:java-android-websocket-client:2.0.2'
 }
 
 configurations.all {

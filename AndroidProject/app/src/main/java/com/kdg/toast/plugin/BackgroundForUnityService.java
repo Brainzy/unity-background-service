@@ -12,11 +12,12 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import java.util.Calendar;
-import java.util.Date;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+
+import java.util.Calendar;
+import java.util.Date;
 
 public class BackgroundForUnityService extends Service {
 
@@ -57,7 +58,6 @@ public class BackgroundForUnityService extends Service {
                 .build();
         startForeground(112, notification);
     }
-
 
     @Override
     public void onCreate() {

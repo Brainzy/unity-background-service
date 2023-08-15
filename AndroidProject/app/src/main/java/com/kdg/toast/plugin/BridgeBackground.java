@@ -15,14 +15,14 @@ import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import java.util.Calendar;
+import java.util.Date;
+
 public final class BridgeBackground extends Application {
-    static TestConnection testConnection;
+    static ClientConnection clientConnection;
     static int testSteps;
     static int summarySteps;
     static int steps;
@@ -110,12 +110,7 @@ public final class BridgeBackground extends Application {
             myActivity.startForegroundService(new Intent(myActivity, BackgroundForUnityService.class));
         }
 
-        try {
-            testConnection = new TestConnection("192.168.1.186");
-            testConnection.connectNewSocket(8887);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        clientConnection = new ClientConnection("192.168.1.186", 8887);
     }
     public static void StopService(){
         Intent serviceIntent = new Intent(myActivity, BackgroundForUnityService.class);
@@ -149,8 +144,8 @@ public final class BridgeBackground extends Application {
         editor.putString(INIT_DATE,currentDate.toString());
         editor.putString(DATE,currentDate.toString());
         editor.apply();
-        Log.i("PEDOMETER", "SyncData: "+steps+' '+summarySteps+data+" "+testConnection.isConnected());
-        testConnection.send("0|$a|cc:0|afk:0|s:0");
+        Log.i("PEDOMETER", "SyncData: " + steps + ' ' + summarySteps + data + " " + clientConnection.isConnected());
+        clientConnection.send("0|$a|cc:0|afk:0|s:0");
         return data;
     }
 
