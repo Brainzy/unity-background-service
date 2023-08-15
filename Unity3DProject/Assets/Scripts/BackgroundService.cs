@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class BackgroundService : MonoBehaviour
 {
+    public string accountId = "13"; //testing value
+    
     [SerializeField] private TextMeshProUGUI stepsText;
     [SerializeField] private TextMeshProUGUI totalStepsText;
     [SerializeField] private TextMeshProUGUI syncedDateText;
@@ -35,7 +37,7 @@ public class BackgroundService : MonoBehaviour
 
     public void StartService()
     {
-        customClass.CallStatic(CustomClassStartServiceMethod);
+        customClass.CallStatic(CustomClassStartServiceMethod, accountId);
         GetCurrentSteps();
     }
 

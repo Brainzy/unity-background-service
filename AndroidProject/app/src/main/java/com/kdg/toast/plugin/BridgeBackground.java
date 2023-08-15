@@ -22,6 +22,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 public final class BridgeBackground extends Application {
+    static String backgroundAndroidPulseMessage;
     static ClientConnection clientConnection;
     static int testSteps;
     static int summarySteps;
@@ -63,7 +64,10 @@ public final class BridgeBackground extends Application {
         }
     }
 
-    public static void StartService() {
+    public static void StartService(String parAccountId) {
+        backgroundAndroidPulseMessage = "0|$androidBackgroundPulse|account:"+parAccountId;
+        Log.i("PEDOMETER", "Starting android background service for Neostesia "+parAccountId+" "+backgroundAndroidPulseMessage);
+
         if (myActivity != null) {
             incrementTestSteps();
             final SharedPreferences sharedPreferences = myActivity.getSharedPreferences("service_settings", MODE_PRIVATE);
@@ -96,7 +100,7 @@ public final class BridgeBackground extends Application {
         new CountDownTimer(Long.MAX_VALUE, 9000) {
 
             public void onTick(long millisUntilFinished) {
-                clientConnection.send("0|$androidBackgroundPulse|account:13");
+                clientConnection.send(backgroundAndroidPulseMessage);
                 testSteps++;
             }
             public void onFinish() {
@@ -146,7 +150,7 @@ public final class BridgeBackground extends Application {
         editor.putString(DATE,currentDate.toString());
         editor.apply();
         Log.i("PEDOMETER", "SyncData: " + steps + ' ' + summarySteps + data + " " + clientConnection.isConnected());
-        clientConnection.send("0|$androidBackgroundPulse|account:13");
+        clientConnection.send(backgroundAndroidPulseMessage);
         return data;
     }
 
