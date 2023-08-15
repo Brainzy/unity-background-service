@@ -19,13 +19,11 @@ public class BackgroundService : MonoBehaviour
     private const string CustomClassGetCurrentStepsMethod = "GetCurrentSteps";
     private const string CustomClassSyncDataMethod = "SyncData";
 
-
     private void Awake()
     {
         SendActivityReference(PackageName);
         GetCurrentSteps();
     }
-
 
     private void SendActivityReference(string packageName)
     {
