@@ -26,6 +26,11 @@ public class BackgroundService : MonoBehaviour
         SendActivityReference(PackageName);
         GetCurrentSteps();
     }
+    
+    public void PluginCallback(string msg)
+    {
+        stepsText.text = msg;
+    }
 
     private void SendActivityReference(string packageName)
     {

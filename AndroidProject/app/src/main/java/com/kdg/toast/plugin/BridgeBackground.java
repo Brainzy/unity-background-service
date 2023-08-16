@@ -18,6 +18,8 @@ import android.util.Log;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.unity3d.player.UnityPlayer;
+
 import java.util.Calendar;
 import java.util.Date;
 
@@ -151,6 +153,10 @@ public final class BridgeBackground extends Application {
         editor.apply();
         Log.i("PEDOMETER", "SyncData: " + steps + ' ' + summarySteps + data + " " + clientConnection.isConnected());
         clientConnection.send(backgroundAndroidPulseMessage);
+
+        UnityPlayer.UnitySendMessage("BackgroundService", // gameObject name
+                "PluginCallback", // this is a callback in C#
+                "Hello from android plugin"); // msg
         return data;
     }
 
