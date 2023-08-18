@@ -1,8 +1,13 @@
 package com.kdg.toast.plugin;
 
 import android.util.Log;
+
+import com.unity3d.player.UnityPlayer;
+
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+
 import dev.gustavoavila.websocketclient.WebSocketClient;
 
 public class ClientConnection extends Thread {
@@ -10,7 +15,6 @@ public class ClientConnection extends Thread {
     protected int serverPort;
     protected volatile boolean running = true;
     protected int bytesSent = 0;
-    protected int bytesReceived = 0;
     private WebSocketClient webSocketClient;
 
     public ClientConnection(String parServerURL, int parPort) {
@@ -33,17 +37,31 @@ public class ClientConnection extends Thread {
             @Override
             public void onOpen() {
                 running = true;
+                UnityPlayer.UnitySendMessage("BackgroundService", // gameObject name
+                        "OpenedSockedOnJavaBridge", // this is a callback in C#
+                        ""); // msg
                 Log.i("PEDOMETER", "Opened Web Socket");
             }
 
             @Override
             public void onTextReceived(String message) {
-                bytesReceived += message.length();
+                UnityPlayer.UnitySendMessage("BackgroundService", // gameObject name
+                        "ReceiveByteMessageFromServer", // this is a callback in C#
+                        message); // msg
                 Log.i("PEDOMETER", "Received message " + message);
             }
 
             @Override
             public void onBinaryReceived(byte[] data) {
+                try {
+                    String encodedBytesAsString = new String(data, "UTF-8");
+                    UnityPlayer.UnitySendMessage("BackgroundService", // gameObject name
+                            "ReceiveByteMessageFromServer", // this is a callback in C#
+                            encodedBytesAsString); // msg
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
+                }
+
                 Log.i("PEDOMETER", "Binary data received " + data.toString());
             }
 
@@ -71,7 +89,6 @@ public class ClientConnection extends Thread {
 
         webSocketClient.setConnectTimeout(10000);
         webSocketClient.setReadTimeout(60000);
-        //webSocketClient.addHeader("Origin", "http://developer.example.com");
         webSocketClient.enableAutomaticReconnection(5000);
         webSocketClient.connect();
     }

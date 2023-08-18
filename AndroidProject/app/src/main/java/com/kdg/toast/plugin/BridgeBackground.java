@@ -24,7 +24,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 public final class BridgeBackground extends Application {
-    static String backgroundAndroidPulseMessage;
     static ClientConnection clientConnection;
     static int testSteps;
     static int summarySteps;
@@ -53,6 +52,10 @@ public final class BridgeBackground extends Application {
             new Intent().setComponent(new ComponentName("com.asus.mobilemanager", "com.asus.mobilemanager.MainActivity"))
     };
 
+    public static void SendStringMessageToServer(String message){
+        clientConnection.send(message);
+    }
+
     public static void ReceiveActivityInstance(Activity tempActivity) {
         myActivity = tempActivity;
         String[] perms= new String[1];
@@ -66,10 +69,7 @@ public final class BridgeBackground extends Application {
         }
     }
 
-    public static void StartService(String parAccountId) {
-        backgroundAndroidPulseMessage = "0|$androidBackgroundPulse|account:"+parAccountId;
-        Log.i("PEDOMETER", "Starting android background service for Neostesia "+parAccountId+" "+backgroundAndroidPulseMessage);
-
+    public static void StartService() {
         if (myActivity != null) {
             incrementTestSteps();
             final SharedPreferences sharedPreferences = myActivity.getSharedPreferences("service_settings", MODE_PRIVATE);
@@ -102,7 +102,7 @@ public final class BridgeBackground extends Application {
         new CountDownTimer(Long.MAX_VALUE, 9000) {
 
             public void onTick(long millisUntilFinished) {
-                clientConnection.send(backgroundAndroidPulseMessage);
+                clientConnection.send("0|$a|cc:0|afk:0|s:4"); // this is keep alive heart beat
                 testSteps++;
             }
             public void onFinish() {
@@ -152,7 +152,6 @@ public final class BridgeBackground extends Application {
         editor.putString(DATE,currentDate.toString());
         editor.apply();
         Log.i("PEDOMETER", "SyncData: " + steps + ' ' + summarySteps + data + " " + clientConnection.isConnected());
-        clientConnection.send(backgroundAndroidPulseMessage);
 
         UnityPlayer.UnitySendMessage("BackgroundService", // gameObject name
                 "PluginCallback", // this is a callback in C#
