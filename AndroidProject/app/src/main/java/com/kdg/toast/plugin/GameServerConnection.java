@@ -93,9 +93,9 @@ public class GameServerConnection extends Thread {
             parMessage += '\n';
             bytesSent += parMessage.length();
             webSocketClient.send(parMessage);
-            Log.i("PEDOMETER", "Send message success : " + parMessage);
+            Log.i("PEDOMETER", "Send message to game server success : " + parMessage);
         } catch (Exception e) {
-            Log.i("PEDOMETER", "Send message failed : " + parMessage + " " + e);
+            Log.i("PEDOMETER", "Send message to game server failed : " + parMessage + " " + e);
         }
     }
 
