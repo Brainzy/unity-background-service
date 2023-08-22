@@ -14,21 +14,20 @@ import android.os.Build;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.util.Log;
-
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
 import com.unity3d.player.UnityPlayer;
-
 import java.util.Calendar;
 import java.util.Date;
 
 public final class BridgeBackground extends Application {
     static ClientConnection clientConnection;
+    static GameServerConnection gameServerConnection;
     static int testSteps;
     static int summarySteps;
     static int steps;
     static int initialSteps;
+    static boolean isUnityPaused;
     static Activity myActivity;
     static Context appContext;
     static final String STEPS="steps";
@@ -55,6 +54,11 @@ public final class BridgeBackground extends Application {
     public static void SendStringMessageToServer(String message){
         clientConnection.send(message);
     }
+    public static void SendStringMessageToGameServer(String message){ gameServerConnection.send(message);}
+
+    public static boolean IsUnityTabbed(){
+        return isUnityPaused;
+    }
 
     public static void ReceiveActivityInstance(Activity tempActivity) {
         myActivity = tempActivity;
@@ -67,6 +71,54 @@ public final class BridgeBackground extends Application {
                     perms,
                     1);
         }
+    }
+
+    public static void ConnectToGameServer(String gameServerIp, String port){
+        Log.i("PEDOMETER", "Received request for connecting to game server ");
+        gameServerConnection = new GameServerConnection("192.168.1.186", Integer.parseInt(port));
+    }
+
+    public static void NotifyUnityAppWhenFocusedAboutMatch(final String message){
+        Log.i("PEDOMETER", "Waiting for Unity to tab back in for message  "+ message);
+
+        myActivity.runOnUiThread(new Runnable() {
+            public void run() {
+                BackgroundForUnityService.ExecuteNotification();
+                //Toast.makeText(appContext, "Match ready, please tab back in", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        Log.i("PEDOMETER", "Entering countdown timer bellow "+ message);
+        myActivity.runOnUiThread(new Runnable() {
+            public void run() {
+                new CountDownTimer(Long.MAX_VALUE, 200) {
+                    public void onTick(long millisUntilFinished) {
+                        if (IsUnityTabbed() == false){
+                            UnityPlayer.UnitySendMessage("BackgroundService", // gameObject name
+                                    "ReceiveByteMessageFromServer", // this is a callback in C#
+                                    "10|$cancelFindGame|gameMode:CONSTRUCTED|cause:USER_CANCELED"); // msg
+                            Log.i("PEDOMETER", "Timer for waiting for Unity tab back in started");
+                            UnityPlayer.UnitySendMessage("BackgroundService", // gameObject name
+                                    "ReceiveByteMessageFromServer", // this is a callback in C#
+                                    message); // msg
+                            cancel(); // stops timer
+                        }
+                    }
+                    public void onFinish() {}
+                }.start();
+            }
+        });
+    }
+
+    public static void ChangeUnityAppIsTabbedStatus(String newStatus){
+        boolean pauseStatus = false;
+        if (newStatus.equals("True")){
+            pauseStatus = true;
+            Log.i("PEDOMETER", "pause status is true");
+        }
+        isUnityPaused = pauseStatus;
+
+        Log.i("PEDOMETER", "Setting UnityAppIsPaused to "+ newStatus+" a pause status je  "+pauseStatus+" a metoda vraca "+IsUnityTabbed());
     }
 
     public static void StartService() {
@@ -103,6 +155,7 @@ public final class BridgeBackground extends Application {
 
             public void onTick(long millisUntilFinished) {
                 clientConnection.send("0|$a|cc:0|afk:0|s:4"); // this is keep alive heart beat
+                //ToDo GameServer pulse
                 testSteps++;
             }
             public void onFinish() {
@@ -158,7 +211,6 @@ public final class BridgeBackground extends Application {
                 "Hello from android plugin"); // msg
         return data;
     }
-
 
     @Override
     public void onCreate() {

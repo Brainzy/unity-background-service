@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -18,6 +19,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 
 public class BackgroundForUnityService extends Service {
 
@@ -26,6 +28,9 @@ public class BackgroundForUnityService extends Service {
     boolean running;
     Date currentDate;
     Date initialDate;
+
+    static Notification notification;
+    static NotificationManager notificationManager;
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -44,7 +49,7 @@ public class BackgroundForUnityService extends Service {
         }
     }
 
-    private void startNotification(){
+    private void startNotification() {
         String input = "Searching for game";
         Intent notificationIntent = new Intent(this, BridgeBackground.myActivity.getClass());
 
@@ -57,6 +62,29 @@ public class BackgroundForUnityService extends Service {
                 .setContentIntent(pendingIntent)
                 .build();
         startForeground(112, notification);
+
+        CreateNotification();
+    }
+
+    public static void ExecuteNotification(){
+        Random random = new Random();
+        notificationManager.notify(random.nextInt(1000), notification);
+    }
+
+
+    public void CreateNotification(){
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            Intent notificationIntent = new Intent(this, BridgeBackground.myActivity.getClass());
+            PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                    0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+            notification = new Notification.Builder(getApplicationContext(), "DEFAULT_CHANNEL_ID")
+                    .setContentTitle("Match found")
+                    .setContentText("Please tab back in game")
+                    .setSmallIcon(R.mipmap.ic_launcher_icon_background)
+                    .setContentIntent(pendingIntent)
+                    .build();
+            notificationManager=(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        }
     }
 
     @Override

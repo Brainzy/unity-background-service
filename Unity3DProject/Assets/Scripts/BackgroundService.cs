@@ -1,9 +1,10 @@
-﻿using TMPro;
+﻿using System;
+using TMPro;
 using UnityEngine;
 
 public class BackgroundService : MonoBehaviour
 {
-    public string accountId = "13"; //testing value
+    public bool isConnected;
     
     [SerializeField] private TextMeshProUGUI stepsText;
     [SerializeField] private TextMeshProUGUI totalStepsText;
@@ -20,16 +21,40 @@ public class BackgroundService : MonoBehaviour
     private const string CustomClassStopServiceMethod = "StopService";
     private const string CustomClassGetCurrentStepsMethod = "GetCurrentSteps";
     private const string CustomClassSyncDataMethod = "SyncData";
+    private const string CustomClassSendMessageToServer = "SendStringMessageToServer";
+    private const string CustomClassChangeUnityAppIsTabbedStatus = "ChangeUnityAppIsTabbedStatus";
 
     private void Awake()
     {
         SendActivityReference(PackageName);
-        GetCurrentSteps();
+    }
+
+    private void OnApplicationPause(bool pauseStatus)
+    {
+        customClass.CallStatic(CustomClassChangeUnityAppIsTabbedStatus, pauseStatus.ToString());
+    }
+
+    public void OpenedSockedOnJavaBridge(string msg)
+    {
+        print("BBBBBBBBBBBBBBBBBBBB otvoren socket na javi " + msg);
+        isConnected = true;
+        //ApplicationManager.worldNetworkManager.OnOpen();
     }
     
     public void PluginCallback(string msg)
     {
         stepsText.text = msg;
+    }
+
+    public void SendStringMessageToServer(string message)
+    {
+        print("BBBBBBBBBBBBBBBBBBBB salje se serveru poruka " + message);
+        customClass.CallStatic(CustomClassSendMessageToServer, message);
+    }
+
+    public void ReceiveByteMessageFromServer(string message)
+    {
+        //ApplicationManager.worldNetworkManager.OnMessageAsString(message);
     }
 
     private void SendActivityReference(string packageName)
@@ -42,8 +67,8 @@ public class BackgroundService : MonoBehaviour
 
     public void StartService()
     {
-        customClass.CallStatic(CustomClassStartServiceMethod, accountId);
-        GetCurrentSteps();
+        print("BBBBBBBBBBBBBBBBBBBBB zadato startovanje servisa");
+        customClass.CallStatic(CustomClassStartServiceMethod);
     }
 
     public void StopService()
@@ -60,7 +85,6 @@ public class BackgroundService : MonoBehaviour
     public void SyncData()
     {
         var data = customClass.CallStatic<string>(CustomClassSyncDataMethod);
-
         var parsedData = data.Split('#');
         var dateOfSync = parsedData[0] + " - " + parsedData[1];
         syncedDateText.text = dateOfSync;
@@ -69,7 +93,6 @@ public class BackgroundService : MonoBehaviour
         var prefsStepsToSave = prefsSteps + receivedSteps;
         PlayerPrefs.SetInt(PlayerPrefsTotalSteps, prefsStepsToSave);
         totalStepsText.text = prefsStepsToSave.ToString();
-
         GetCurrentSteps();
     }
 }
