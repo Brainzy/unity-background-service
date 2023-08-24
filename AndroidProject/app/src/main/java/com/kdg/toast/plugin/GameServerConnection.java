@@ -16,7 +16,7 @@ public class GameServerConnection extends Thread {
     public WebSocketClient webSocketClient;
 
     public GameServerConnection(String parServerURL, int parPort) {
-        Log.i("PEDOMETER", "Connecting to game server "+parServerURL+" with port "+parPort);
+        Log.i("NeostesiaService", "Connecting to game server "+parServerURL+" with port "+parPort);
         serverIp = parServerURL;
         serverPort = parPort;
         createWebSocketClient();
@@ -26,9 +26,9 @@ public class GameServerConnection extends Thread {
         URI uri;
         try {
             uri = new URI("ws://" + serverIp + ":" + serverPort);
-            Log.i("PEDOMETER", "Set URI for connecting to server to "+uri);
+            Log.i("NeostesiaService", "Set URI for connecting to server to "+uri);
         } catch (URISyntaxException e) {
-            Log.i("PEDOMETER", "Exception happened when parsing ip " + serverIp + " with port " + serverPort + " " + e);
+            Log.i("NeostesiaService", "Exception happened when parsing ip " + serverIp + " with port " + serverPort + " " + e);
             return;
         }
 
@@ -39,7 +39,7 @@ public class GameServerConnection extends Thread {
                 UnityPlayer.UnitySendMessage("BackgroundService", // gameObject name
                         "OpenedSocketForGameServer", // this is a callback in C#
                         ""); // msg
-                Log.i("PEDOMETER", "Opened Web Socket for game server");
+                Log.i("NeostesiaService", "Opened Web Socket for game server");
             }
 
             @Override
@@ -47,7 +47,7 @@ public class GameServerConnection extends Thread {
                 UnityPlayer.UnitySendMessage("BackgroundService", // gameObject name
                         "ReceiveByteMessageFromGameServer", // this is a callback in C#
                         message); // msg
-                Log.i("PEDOMETER", "Received message from game server aaaaa " + message);
+                Log.i("NeostesiaService", "Received message from game server aaaaa " + message);
             }
 
             @Override
@@ -57,22 +57,22 @@ public class GameServerConnection extends Thread {
                         "ReceiveByteMessageFromGameServer", // this is a callback in C#
                         encodedBytesAsString); // msg
 
-                Log.i("PEDOMETER", "Binary data received from game server " + data.toString());
+                Log.i("NeostesiaService", "Binary data received from game server " + data.toString());
             }
 
             @Override
             public void onPingReceived(byte[] data) {
-                Log.i("PEDOMETER", "Ping data received from game server " + data.toString());
+                Log.i("NeostesiaService", "Ping data received from game server " + data.toString());
             }
 
             @Override
             public void onPongReceived(byte[] data) {
-                Log.i("PEDOMETER", "Pong data received from game server " + data.toString());
+                Log.i("NeostesiaService", "Pong data received from game server " + data.toString());
             }
 
             @Override
             public void onException(Exception e) {
-                Log.i("PEDOMETER", "Web Socket exception happened on game server connection " + e.toString());
+                Log.i("NeostesiaService", "Web Socket exception happened on game server connection " + e.toString());
             }
 
             @Override
@@ -81,7 +81,7 @@ public class GameServerConnection extends Thread {
                 UnityPlayer.UnitySendMessage("BackgroundService", // gameObject name
                         "GameServerClosedSocket", // this is a callback in C#
                         "description"); // msg
-                Log.i("PEDOMETER", "Closed Web Socket on game server ");
+                Log.i("NeostesiaService", "Closed Web Socket on game server ");
             }
         };
 
@@ -96,9 +96,9 @@ public class GameServerConnection extends Thread {
             parMessage += '\n';
             bytesSent += parMessage.length();
             webSocketClient.send(parMessage);
-            Log.i("PEDOMETER", "Send message to game server success : " + parMessage);
+            Log.i("NeostesiaService", "Send message to game server success : " + parMessage);
         } catch (Exception e) {
-            Log.i("PEDOMETER", "Send message to game server failed : " + parMessage + " " + e);
+            Log.i("NeostesiaService", "Send message to game server failed : " + parMessage + " " + e);
         }
     }
 

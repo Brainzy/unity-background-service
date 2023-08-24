@@ -24,7 +24,7 @@ import java.util.Random;
 public class BackgroundForUnityService extends Service {
 
     public SharedPreferences sharedPreferences;
-    String TAG = "PEDOMETER";
+    String TAG = "NeostesiaService";
     boolean running;
     Date currentDate;
     Date initialDate;

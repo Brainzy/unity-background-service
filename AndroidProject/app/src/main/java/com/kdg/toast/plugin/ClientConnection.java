@@ -27,9 +27,9 @@ public class ClientConnection extends Thread {
         URI uri;
         try {
             uri = new URI("ws://" + serverIp + ":" + serverPort);
-            Log.i("PEDOMETER", "Set URI for connecting to server to "+uri);
+            Log.i("NeostesiaService", "Set URI for connecting to server to "+uri);
         } catch (URISyntaxException e) {
-            Log.i("PEDOMETER", "Exception happened when parsing ip " + serverIp + " with port " + serverPort + " " + e);
+            Log.i("NeostesiaService", "Exception happened when parsing ip " + serverIp + " with port " + serverPort + " " + e);
             return;
         }
 
@@ -40,7 +40,7 @@ public class ClientConnection extends Thread {
                 UnityPlayer.UnitySendMessage("BackgroundService", // gameObject name
                         "OpenedSockedOnJavaBridge", // this is a callback in C#
                         ""); // msg
-                Log.i("PEDOMETER", "Opened Web Socket");
+                Log.i("NeostesiaService", "Opened Web Socket");
             }
 
             @Override
@@ -49,14 +49,14 @@ public class ClientConnection extends Thread {
                 if (BridgeBackground.IsUnityTabbed()){
                     if (message.contains("opponentFound")){
                         BridgeBackground.NotifyUnityAppWhenFocusedAboutMatch(message);
-                        Log.i("PEDOMETER", "WWWWWWWWWWWWWWWWWWWWWWWWW Sending demand for app notification " + message);
+                        Log.i("NeostesiaService", "WWWWWWWWWWWWWWWWWWWWWWWWW Sending demand for app notification " + message);
                     }
                 }
 
                 UnityPlayer.UnitySendMessage("BackgroundService", // gameObject name
                         "ReceiveByteMessageFromServer", // this is a callback in C#
                         message); // msg
-                Log.i("PEDOMETER", "Received message aaaaa " + message);
+                Log.i("NeostesiaService", "Received message aaaaa " + message);
             }
 
             @Override
@@ -66,28 +66,28 @@ public class ClientConnection extends Thread {
                         "ReceiveByteMessageFromServer", // this is a callback in C#
                         encodedBytesAsString); // msg
 
-                Log.i("PEDOMETER", "Binary data received " + data.toString());
+                Log.i("NeostesiaService", "Binary data received " + data.toString());
             }
 
             @Override
             public void onPingReceived(byte[] data) {
-                Log.i("PEDOMETER", "Ping data received " + data.toString());
+                Log.i("NeostesiaService", "Ping data received " + data.toString());
             }
 
             @Override
             public void onPongReceived(byte[] data) {
-                Log.i("PEDOMETER", "Pong data received " + data.toString());
+                Log.i("NeostesiaService", "Pong data received " + data.toString());
             }
 
             @Override
             public void onException(Exception e) {
-                Log.i("PEDOMETER", "Web Socket exception happened " + e.toString());
+                Log.i("NeostesiaService", "Web Socket exception happened " + e.toString());
             }
 
             @Override
             public void onCloseReceived(int reason, String description) {
                 running = false;
-                Log.i("PEDOMETER", "Closed Web Socket");
+                Log.i("NeostesiaService", "Closed Web Socket");
             }
         };
 
@@ -102,9 +102,9 @@ public class ClientConnection extends Thread {
             parMessage += '\n';
             bytesSent += parMessage.length();
             webSocketClient.send(parMessage);
-            Log.i("PEDOMETER", "Send message success : " + parMessage);
+            Log.i("NeostesiaService", "Send message success : " + parMessage);
         } catch (Exception e) {
-            Log.i("PEDOMETER", "Send message failed : " + parMessage + " " + e);
+            Log.i("NeostesiaService", "Send message failed : " + parMessage + " " + e);
         }
     }
 

@@ -69,7 +69,7 @@ public final class BridgeBackground extends Application {
         perms[0]=Manifest.permission.FOREGROUND_SERVICE;
         if (ContextCompat.checkSelfPermission(myActivity, Manifest.permission.ACTIVITY_RECOGNITION)
                 != PackageManager.PERMISSION_GRANTED) {
-            Log.i("PEDOMETER", "Permision isnt granted!");
+            Log.i("NeostesiaService", "Permision isnt granted!");
             ActivityCompat.requestPermissions(BridgeBackground.myActivity,
                     perms,
                     1);
@@ -78,12 +78,12 @@ public final class BridgeBackground extends Application {
     }
 
     public static void ConnectToWorldServer(String worldServerIp, String port){
-        Log.i("PEDOMETER", "Received request for connecting to game server ");
+        Log.i("NeostesiaService", "Received request for connecting to game server ");
         clientConnection = new ClientConnection(worldServerIp, Integer.parseInt(port));
     }
 
     public static void ConnectToGameServer(String gameServerIp, String port){
-        Log.i("PEDOMETER", "Received request for connecting to game server ");
+        Log.i("NeostesiaService", "Received request for connecting to game server ");
         gameServerConnection = new GameServerConnection(gameServerIp, Integer.parseInt(port));
     }
 
@@ -98,7 +98,7 @@ public final class BridgeBackground extends Application {
     }
 
     public static void NotifyUnityAppWhenFocusedAboutMatch(final String message){
-        Log.i("PEDOMETER", "Waiting for Unity to tab back in for message  "+ message);
+        Log.i("NeostesiaService", "Waiting for Unity to tab back in for message  "+ message);
 
         myActivity.runOnUiThread(new Runnable() {
             public void run() {
@@ -107,7 +107,7 @@ public final class BridgeBackground extends Application {
             }
         });
 
-        Log.i("PEDOMETER", "Entering countdown timer bellow "+ message);
+        Log.i("NeostesiaService", "Entering countdown timer bellow "+ message);
         myActivity.runOnUiThread(new Runnable() {
             public void run() {
                 new CountDownTimer(Long.MAX_VALUE, 200) {
@@ -116,7 +116,7 @@ public final class BridgeBackground extends Application {
                             UnityPlayer.UnitySendMessage("BackgroundService", // gameObject name
                                     "ReceiveByteMessageFromServer", // this is a callback in C#
                                     "10|$cancelFindGame|gameMode:CONSTRUCTED|cause:USER_CANCELED"); // msg
-                            Log.i("PEDOMETER", "Timer for waiting for Unity tab back in started");
+                            Log.i("NeostesiaService", "Timer for waiting for Unity tab back in started");
                             UnityPlayer.UnitySendMessage("BackgroundService", // gameObject name
                                     "ReceiveByteMessageFromServer", // this is a callback in C#
                                     message); // msg
@@ -133,11 +133,11 @@ public final class BridgeBackground extends Application {
         boolean pauseStatus = false;
         if (newStatus.equals("True")){
             pauseStatus = true;
-            Log.i("PEDOMETER", "pause status is true");
+            Log.i("NeostesiaService", "pause status is true");
         }
         isUnityPaused = pauseStatus;
 
-        Log.i("PEDOMETER", "Setting UnityAppIsPaused to "+ newStatus+" a pause status je  "+pauseStatus+" a metoda vraca "+IsUnityTabbed());
+        Log.i("NeostesiaService", "Setting UnityAppIsPaused to "+ newStatus+" a pause status je  "+pauseStatus+" a metoda vraca "+IsUnityTabbed());
     }
 
     public static void StartService() {
@@ -202,7 +202,7 @@ public final class BridgeBackground extends Application {
         int walkedSteps = sharedPreferences.getInt(STEPS, 0);
         int allSteps = sharedPreferences.getInt(SUMMARY_STEPS,0);
         summarySteps = walkedSteps + allSteps + testSteps;
-        Log.i("PEDOMETER", "FROM BRIDGE CLASS - GetCurrentSteps:"+summarySteps);
+        Log.i("NeostesiaService", "FROM BRIDGE CLASS - GetCurrentSteps:"+summarySteps);
         return summarySteps;
     }
     public static String SyncData(){
@@ -221,7 +221,7 @@ public final class BridgeBackground extends Application {
         editor.putString(INIT_DATE,currentDate.toString());
         editor.putString(DATE,currentDate.toString());
         editor.apply();
-        Log.i("PEDOMETER", "SyncData: " + steps + ' ' + summarySteps + data + " ");
+        Log.i("NeostesiaService", "SyncData: " + steps + ' ' + summarySteps + data + " ");
 
         UnityPlayer.UnitySendMessage("BackgroundService", // gameObject name
                 "PluginCallback", // this is a callback in C#
