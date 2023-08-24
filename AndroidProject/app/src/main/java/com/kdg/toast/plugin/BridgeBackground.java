@@ -137,7 +137,7 @@ public final class BridgeBackground extends Application {
         }
         isUnityPaused = pauseStatus;
 
-        Log.i("NeostesiaService", "Setting UnityAppIsPaused to "+ newStatus+" a pause status je  "+pauseStatus+" a metoda vraca "+IsUnityTabbed());
+        Log.i("NeostesiaService", "Setting UnityAppIsPaused to "+ newStatus);
     }
 
     public static void StartService() {
