@@ -14,9 +14,12 @@ import android.os.Build;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.util.Log;
+
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
 import com.unity3d.player.UnityPlayer;
+
 import java.util.Calendar;
 import java.util.Date;
 
@@ -63,13 +66,14 @@ public final class BridgeBackground extends Application {
     public static void ReceiveActivityInstance(Activity tempActivity) {
         myActivity = tempActivity;
         String[] perms= new String[1];
-        perms[0]=Manifest.permission.ACTIVITY_RECOGNITION;
+        perms[0]=Manifest.permission.FOREGROUND_SERVICE;
         if (ContextCompat.checkSelfPermission(myActivity, Manifest.permission.ACTIVITY_RECOGNITION)
                 != PackageManager.PERMISSION_GRANTED) {
             Log.i("PEDOMETER", "Permision isnt granted!");
             ActivityCompat.requestPermissions(BridgeBackground.myActivity,
                     perms,
                     1);
+
         }
     }
 
