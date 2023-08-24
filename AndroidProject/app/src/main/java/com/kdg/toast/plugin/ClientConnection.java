@@ -15,7 +15,7 @@ public class ClientConnection extends Thread {
     protected int serverPort;
     protected volatile boolean running = true;
     protected int bytesSent = 0;
-    private WebSocketClient webSocketClient;
+    public WebSocketClient webSocketClient;
 
     public ClientConnection(String parServerURL, int parPort) {
         serverIp = parServerURL;

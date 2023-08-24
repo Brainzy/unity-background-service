@@ -13,7 +13,7 @@ public class GameServerConnection extends Thread {
     protected int serverPort;
     protected volatile boolean running = true;
     protected int bytesSent = 0;
-    private WebSocketClient webSocketClient;
+    public WebSocketClient webSocketClient;
 
     public GameServerConnection(String parServerURL, int parPort) {
         Log.i("PEDOMETER", "Connecting to game server "+parServerURL+" with port "+parPort);
@@ -78,6 +78,9 @@ public class GameServerConnection extends Thread {
             @Override
             public void onCloseReceived(int reason, String description) {
                 running = false;
+                UnityPlayer.UnitySendMessage("BackgroundService", // gameObject name
+                        "GameServerClosedSocket", // this is a callback in C#
+                        "description"); // msg
                 Log.i("PEDOMETER", "Closed Web Socket on game server ");
             }
         };

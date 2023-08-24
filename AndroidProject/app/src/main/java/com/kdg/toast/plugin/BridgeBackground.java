@@ -78,6 +78,16 @@ public final class BridgeBackground extends Application {
         gameServerConnection = new GameServerConnection("192.168.1.186", Integer.parseInt(port));
     }
 
+    public static void DisconnectFromWorldServer() {
+        clientConnection.webSocketClient.close(5000, 1000, "Closed by server");
+        clientConnection = null;
+    }
+
+    public static void DisconnectFromGameServer() {
+        gameServerConnection.webSocketClient.close(5000, 1000, "Closed by server");
+        gameServerConnection = null;
+    }
+
     public static void NotifyUnityAppWhenFocusedAboutMatch(final String message){
         Log.i("PEDOMETER", "Waiting for Unity to tab back in for message  "+ message);
 
