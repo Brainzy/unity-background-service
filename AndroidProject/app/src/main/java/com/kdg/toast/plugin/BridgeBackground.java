@@ -73,9 +73,14 @@ public final class BridgeBackground extends Application {
         }
     }
 
+    public static void ConnectToWorldServer(String worldServerIp, String port){
+        Log.i("PEDOMETER", "Received request for connecting to game server ");
+        clientConnection = new ClientConnection(worldServerIp, Integer.parseInt(port));
+    }
+
     public static void ConnectToGameServer(String gameServerIp, String port){
         Log.i("PEDOMETER", "Received request for connecting to game server ");
-        gameServerConnection = new GameServerConnection("192.168.1.186", Integer.parseInt(port));
+        gameServerConnection = new GameServerConnection(gameServerIp, Integer.parseInt(port));
     }
 
     public static void DisconnectFromWorldServer() {
@@ -164,8 +169,8 @@ public final class BridgeBackground extends Application {
         new CountDownTimer(Long.MAX_VALUE, 9000) {
 
             public void onTick(long millisUntilFinished) {
-                clientConnection.send("0|$a|cc:0|afk:0|s:4"); // this is keep alive heart beat
-                //ToDo GameServer pulse
+                if (clientConnection!=null)
+                    clientConnection.send("0|$a|cc:0|afk:0|s:4"); // this is keep alive heart beat
                 testSteps++;
             }
             public void onFinish() {
@@ -179,8 +184,6 @@ public final class BridgeBackground extends Application {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             myActivity.startForegroundService(new Intent(myActivity, BackgroundForUnityService.class));
         }
-
-        clientConnection = new ClientConnection("192.168.1.186", 8887);
     }
     public static void StopService(){
         Intent serviceIntent = new Intent(myActivity, BackgroundForUnityService.class);
@@ -214,7 +217,7 @@ public final class BridgeBackground extends Application {
         editor.putString(INIT_DATE,currentDate.toString());
         editor.putString(DATE,currentDate.toString());
         editor.apply();
-        Log.i("PEDOMETER", "SyncData: " + steps + ' ' + summarySteps + data + " " + clientConnection.isConnected());
+        Log.i("PEDOMETER", "SyncData: " + steps + ' ' + summarySteps + data + " ");
 
         UnityPlayer.UnitySendMessage("BackgroundService", // gameObject name
                 "PluginCallback", // this is a callback in C#
