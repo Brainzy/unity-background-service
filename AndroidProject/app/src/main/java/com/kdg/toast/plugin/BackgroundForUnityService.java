@@ -78,8 +78,8 @@ public class BackgroundForUnityService extends Service {
             PendingIntent pendingIntent = PendingIntent.getActivity(this,
                     0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
             notification = new Notification.Builder(getApplicationContext(), "DEFAULT_CHANNEL_ID")
-                    .setContentTitle("Match found")
-                    .setContentText("Please tab back in game")
+                    .setContentTitle("Neostesia")
+                    .setContentText("Your match is ready!")
                     .setSmallIcon(R.mipmap.ic_launcher_icon_background)
                     .setContentIntent(pendingIntent)
                     .build();

@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -103,7 +104,7 @@ public final class BridgeBackground extends Application {
         myActivity.runOnUiThread(new Runnable() {
             public void run() {
                 BackgroundForUnityService.ExecuteNotification();
-                //Toast.makeText(appContext, "Match ready, please tab back in", Toast.LENGTH_LONG).show();
+                Toast.makeText(appContext, "Your match is ready!", Toast.LENGTH_LONG).show();
             }
         });
 
