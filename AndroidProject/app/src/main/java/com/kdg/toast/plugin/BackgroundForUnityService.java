@@ -12,23 +12,15 @@ import android.os.Build;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
-
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Random;
 
 public class BackgroundForUnityService extends Service {
 
     public SharedPreferences sharedPreferences;
     String TAG = "NeostesiaService";
-    boolean running;
-    Date currentDate;
-    Date initialDate;
-
     static Notification notification;
     static NotificationManager notificationManager;
     @Nullable
@@ -50,13 +42,13 @@ public class BackgroundForUnityService extends Service {
     }
 
     private void startNotification() {
-        String input = "Searching for game";
+        String input = "";
         Intent notificationIntent = new Intent(this, BridgeBackground.myActivity.getClass());
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
         Notification notification = new NotificationCompat.Builder(this, "DEFAULT_CHANNEL_ID")
-                .setContentTitle("Neostesia matchmaking service")
+                .setContentTitle("Neostesia Network Service")
                 .setContentText(input)
                 .setSmallIcon(R.mipmap.ic_launcher_icon_background)
                 .setContentIntent(pendingIntent)
@@ -91,8 +83,6 @@ public class BackgroundForUnityService extends Service {
     public void onCreate() {
         Log.i(TAG, "onCreate: CREATED"+ BridgeBackground.steps);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        loadData();
-        saveSummarySteps(BridgeBackground.summarySteps+ BridgeBackground.steps);
     }
 
     @Override
@@ -107,43 +97,13 @@ public class BackgroundForUnityService extends Service {
         createNotificationChannel();
         startNotification();
         super.onCreate();
-        BridgeBackground.initialSteps=0;
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        initialDate = Calendar.getInstance().getTime();
-        editor.putString(BridgeBackground.INIT_DATE, currentDate.toString());
-        editor.apply();
         return START_NOT_STICKY;
     }
 
     @Override
     public void onDestroy() {
+        Log.i(TAG, "onDestroy: DESTROYED Neostesia Service");
         super.onDestroy();
-        Log.i(TAG, "onDestroy: DESTROYED");
-        loadData();
-        saveSummarySteps(BridgeBackground.summarySteps+ BridgeBackground.steps);
     }
 
-    public void saveData(int currentSteps) {
-
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        currentDate = Calendar.getInstance().getTime();
-        editor.putString(BridgeBackground.DATE, currentDate.toString());
-        Log.i(TAG, "saveData: saved! "+currentSteps);
-        editor.putInt(BridgeBackground.STEPS, currentSteps);
-        editor.apply();
-    }
-    public void saveSummarySteps(int stepsToSave) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        currentDate = Calendar.getInstance().getTime();
-        editor.putString(BridgeBackground.DATE, currentDate.toString());
-        Log.i(TAG, "saveSummarySteps: saved! "+stepsToSave);
-        editor.putInt("summarySteps", stepsToSave);
-        editor.apply();
-    }
-    public void loadData() {
-        BridgeBackground.steps = sharedPreferences.getInt(BridgeBackground.STEPS, 0);
-        BridgeBackground.summarySteps = sharedPreferences.getInt("summarySteps",0);
-        Log.i(TAG, "loadData: steps"+ BridgeBackground.steps);
-        Log.i(TAG, "loadData: summarySteps "+ BridgeBackground.summarySteps);
-    }
 }

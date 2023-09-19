@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <application android:name=".BridgeBackground"
         tools:replace="android:name">
-        <service android:name=".BackgroundForUnityService"
+        <service android:name=".BackgroundForUnityService" android:stopWithTask="true"
             android:enabled="true"
             android:exported="false"/>
     </application>
