@@ -89,13 +89,18 @@ public final class BridgeBackground extends Application {
     }
 
     public static void DisconnectFromWorldServer() {
-        clientConnection.webSocketClient.close(5000, 1000, "Closed by server");
-        clientConnection = null;
+        try{
+            if (clientConnection != null && clientConnection.webSocketClient != null){
+                Log.i("NeostesiaService", "Trying to close client connection to world server");
+                clientConnection.webSocketClient.close(5000, 1000, "Closed by server");
+            }
+        }catch (Exception e){
+            Log.i("NeostesiaService", "Error closing client connection to world server "+e);
+        }
     }
 
     public static void DisconnectFromGameServer() {
         gameServerConnection.webSocketClient.close(5000, 1000, "Closed by server");
-        gameServerConnection = null;
     }
 
     public static void NotifyUnityAppWhenFocusedAboutMatch(final String message){
